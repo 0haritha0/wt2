@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Total tasks : {{tasks}}</h2>
+<div>
+    <div class="card border-info mb-4" style="max-width: 40rem;">
+        <div class="bg-info text-white card-header">Task</div>
+        <form class="card-body" method="post" action="{% url 'form' %}">
+            {% csrf_token %}
+            <label>Task description</label>
+              <input type="textarea" name="task" class="form-control"  rows="4" cols="50"><br>
+              
+            <label>Location</label>
+            <input type="textarea" name="location" class="form-control"  rows="4" cols="50"><br>
+              
+            <label>Date</label>
+            <input type="date" name="date" class="form-control"  rows="4" cols="50"><br>
+              
+            <label>Time</label>
+            <input type="time" name="time" class="form-control"  rows="4" cols="50"><br>
+              
+              <input type="submit" value="Submit" class="btn btn-info">
+        </form>
+      </div>
+</div>
+<br><br>
+
+{% for activity in activities %}
+<div class="card border-success mb-3" style="max-width: 80rem;">
+    <div class="card-header bg-transparent border-denger">Task:{{activity.task_desc}}</div>
+    <div class="card-body text-info">
+      <h5 class="card-title">Task:	&nbsp;{{activity.task_desc}}</h5>
+      <p class="card-text">location:	&nbsp;{{activity.location}}</p>
+    </div>
+  </div>
+    </div>
+{% endfor %}
+{% endblock %}

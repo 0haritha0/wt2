@@ -1,0 +1,31 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">Welcome to Baby's World!</h1>
+      <p class="lead">We have the best cloths, products and toys for babies. No need to hunt around, we have all in one place.</p>
+    </div>
+  </div>
+  
+  <div class="h-100 row align-items-center">
+  {% for category in categories %}
+  <div class="card mb-3" style="width: 45%; margin:2.5%;">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <img src="{{category.category_image.url}}" class="card-img" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{category.category_name}}</h5>
+          <p class="card-text">{{category.category_desc}}</p>
+          <a class="btn btn-primary" href="{% url 'product_list' category.id %}">Shop Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+{% endblock %}

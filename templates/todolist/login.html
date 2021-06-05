@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<br>
+<h1>Sign-in</h1>
+<br>
+{% for message in messages %}
+<div class="text-center alert alert-dismissible alert-primary">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{message}}
+  </div>
+{% endfor %}
+    <div style="max-width: 40rem;">
+        <form class="card-body" method="post" action="{% url 'userlogin' %}">
+            {% csrf_token %}
+              <input type="text" name="username" placeholder="username" class="form-control">
+              <br>
+              <input type="password" name="password" placeholder="password" class="form-control">
+              <br>
+              <input type="submit" value="login" class="btn btn-info">
+        </form>
+
+{% endblock %}
+
+

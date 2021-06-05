@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div style="height: 80vh;width: 100vw;" class="text-center d-flex justify-content-center align-items-center">
+    <div class="card border-info mb-4" style="max-width: 40rem;">
+        <div class="bg-info text-white card-header">Feedback</div>
+        <form class="card-body" method="post" action="{% url 'form' %}">
+            {% csrf_token %}
+            <label>task description:</label>
+              <input type="textarea" name="task" class="form-control"  rows="4" cols="50"><br>
+        </form>
+      </div>
+</div>
+
+{% endblock %}

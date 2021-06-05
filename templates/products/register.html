@@ -1,0 +1,28 @@
+{% extends 'base2.html' %}
+{% load static %}
+
+{% block content %}
+<div  style="margin-left: 5%">
+  <br>
+<h1>Sign up Form</h1>
+<form method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    <p>
+      {{ field.label_tag }}<br>
+      {{ field }}
+      <br>
+      {% if field.help_text %}
+        <small style="color: grey">{{ field.help_text }}</small>
+      {% endif %}
+      {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+      {% endfor %}
+    </p>
+  {% endfor %}
+  <p>Already a user? <a href="{% url 'userloginpage' %}">Login</a></p>
+  <br>
+  <button class="btn btn-primary" type="submit">Sign up</button>
+</form>
+</div>
+{% endblock %}

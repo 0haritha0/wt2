@@ -1,0 +1,31 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">{{cat.category_name}}</h1>
+      <p class="lead">{{cat.category_desc}}</p>
+    </div>
+  </div>
+
+<div class="h-100 row align-items-center">
+    {% for product in product_list %}
+    <div class="card mb-3" style="width: 30%; margin:1.5%;">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="{{product.product_image.url}}" class="card-img" alt="...">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">{{product.product_brand}}</h5>
+            <p class="card-text">{{product.product_name}}</p>
+            <a class="btn btn-primary" href="{% url 'product_details' cat.id  product.id %}">View Product</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+
+{% endblock %}

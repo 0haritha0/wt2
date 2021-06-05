@@ -1,0 +1,41 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+{% for message in messages %}
+<div class="text-center alert alert-dismissible alert-primary">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{message}}
+  </div>
+{% endfor %}
+<!--
+    <div style="max-width: 40rem;">
+        <form class="card-body" method="post" action="{% url 'userlogin' %}">
+            {% csrf_token %}
+              <input type="text" name="username" placeholder="Username" class="form-control">
+              <br>
+              <input type="password" name="password" placeholder="password" class="form-control">
+              <br>
+              <input type="submit" value="login" class="btn btn-info">
+        </form>
+    </div>
+  -->
+    <div  style="margin-left: 5%">
+      <br>
+      <h1>Sign-in</h1>
+      <br>
+      <form class="card-body" method="post" action="{% url 'userlogin' %}">
+        {% csrf_token %}
+        <div class="form-group" style="width: 25% ;">
+            <input type="text" name="username" placeholder="Username" class="form-control" required>
+            <br>
+            <input type="password" name="password" placeholder="Password" class="form-control"required>
+          </div>
+      
+        <p>New here? <a href="{% url 'userregister' %}">Register</a></p>
+        <br>
+        <input type="submit"  class="btn btn-primary" name="login">
+      </form>
+      </div>
+{% endblock %}
+
+

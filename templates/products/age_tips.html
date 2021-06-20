@@ -1,0 +1,25 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+<br>
+<h2  style="margin-left: 5%">Baby's World Parenting</h2>
+<br>
+<div class="container">
+    <h3>{{aget}}</h3>
+
+<div class="h-100 row align-items-center">
+    {% for age in age_tips %}
+    <div class="card" style="margin:1%">
+        <div class="card-header">
+            <b>{{age.tip_title}}</b>
+        </div>
+        <div class="card-body">
+            <p>{{age.tip_desc}}</p>
+        </div>
+        </div>
+        
+  {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

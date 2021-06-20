@@ -7,4 +7,10 @@ admin.site.register([
     product,
     Cart,
     CartItems,
+    OrderItem,
+    Order,
+    Address,
+    payment,
+    tips,
+    parenting_tip
 ])

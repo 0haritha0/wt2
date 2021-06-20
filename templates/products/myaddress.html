@@ -1,0 +1,77 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+<br>
+<h2  style="margin-left: 5%">My Addresses</h2>
+<div class="container">
+  <div class="row" >
+        
+    <div class="col-sm" style="margin: 5% 0%;">
+      {% for address in addresses %}
+      <div class="card mb-3" style="max-width: 540px;">
+          <div class="row no-gutters">
+            <div class="col-md-8">
+              <div class="card-body">
+                <h6 class="card-title">{{address.name}} - {{address.phone}}</h6>
+                <p class="card-text">{{address.addr}}, {{address.locality}}, {{address.city}}, {{address.state}} - {{address.pincode}}</p>
+                
+                <a class="btn btn-secondary" href="{% url 'deleteaddress' address.id%}">Delete</a>              
+              </div>
+            </div>
+          </div>
+        </div>{% empty %}
+        <h2>No addressess!!!</h2>
+      {% endfor %}
+    </div>
+
+      <div class="col-sm" style="margin: 5%;">
+
+        <h3>ADD ADDRESS</h3>
+        <form name="addressform" method="post" action="{% url 'addaddress' %}"  >
+            {% csrf_token %}
+  
+            <input class="form-label mt-4" type="text" id="name" name="name" placeholder="Name">
+            <input class="form-label mt-4" type="text" id="phoneno" name="phoneno" placeholder="Phone Number">
+            <br>
+            <input class="form-label mt-4" type="text" id="pincode" name="pincode" placeholder="Pincode">
+            <input class="form-label mt-4" type="text" id="locality" name="locality" placeholder="Locality">
+            <br>
+            <br>
+            <textarea class="form-control" id="address" name="address" placeholder="Address(Area and Street)" style="max-width: 375px;"></textarea>
+            
+            <input class="form-label mt-4" type="text" id="city" name="city" placeholder="City/District/Town">
+            <select class="form-label mt-4t" id="state" name="state">
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+            </select>
+            <br>
+            <input class="form-label mt-4" type="text" id="landmark" name="landmark" placeholder="Landmark(Optional)">
+            <input class="form-label mt-4" type="text" id="aphone" name="aphone" placeholder="Alternate Phone No.(Optional)">
+            <br>
+            <br>
+            <button class="btn btn-primary" type="submit">Add Address</button> 
+         </tr>
+        </form>
+        
+        {% if items %}
+        <h3 class="text-muted" >PRICE DETAILS{{total.quantity__sum}}</h3>
+        <br>
+        <h4>Total Price({{total.quantity__sum}} items) </h4>
+        <h4><b>{{usercart.total_price}}</b></h4>
+        <br>
+        <a type="button" class="btn btn-success" href="{% url 'orderoptions' %}">Place Order</a>
+        
+        <form name="orderform" method="post" action="{% url 'placeorder' %}" >
+          {% csrf_token %}
+          <button class="btn btn-primary" type="submit">Place Order</button>
+      </form>
+
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+
+{% endblock %}

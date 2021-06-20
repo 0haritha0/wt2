@@ -15,29 +15,31 @@
               </div>
               <div class="col-md-8">
                 <div class="card-body">
-                  <h6 class="card-title">{{i.prod.product_brand}} {{i.prod.product_name}}</h6>
+                  <h6 class="card-title"><a href="{% url 'product_details' i.prod.product_category.id  i.prod.id %}">{{i.prod.product_brand}} {{i.prod.product_name}}</a></h6>
                   <h5 class="card-text">₹{{i.prod.get_discount_price}}</h5>
                   <p class="card-text"><del>₹{{i.prod.product_price}}</del> &nbsp; <span  class="text-primary" >{{i.prod.product_discount}}% Off</span></p>
                   <p class="card-text">Quantity = {{i.quantity}}</p>
                   <a class="btn btn-secondary" href="{% url 'delete' usercart.id i.id%}">Delete</a>
+                  <a class="btn btn-primary" href="{% url 'userhomepage' %}">Continue Shopping</a>
                 </div>
               </div>
             </div>
           </div>
           {% empty %}
           <h2>No items in the cart</h2>
-          <a class="btn btn-primary" href="{% url 'userhomepage' %}">Continue Shopping</a>
+          <a class="btn btn-primary" href="{% url 'userhomepage' %}">Shop Now</a>
         {% endfor %}
       </div>
 
       <div class="col-sm" style="margin: 5%;">
         {% if items %}
-        <h3 class="text-muted" >PRICE DETAILS{{total.quantity__sum}}</h3>
+        <h3 class="text-muted" >PRICE DETAILS</h3>
         <br>
         <h4>Total Price({{total.quantity__sum}} items) </h4>
         <h4><b>{{usercart.total_price}}</b></h4>
         <br>
-        <a type="button" class="btn btn-success" href="#">Place Order</a>
+        <a type="button" class="btn btn-success" href="{% url 'orderoptions' %}">Place Order</a>
+        
         {% endif %}
       </div>
 

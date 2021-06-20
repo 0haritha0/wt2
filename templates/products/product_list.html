@@ -14,12 +14,29 @@
     <div class="card mb-3" style="width: 30%; margin:1.5%;">
       <div class="row no-gutters">
         <div class="col-md-4">
+          {% if product.quantity == 0 %}
+          <div style="filter: grayscale(100%);">
+            {% endif %}
           <img src="{{product.product_image.url}}" class="card-img" alt="...">
+          {% if product.quantity == 0 %}
+        </div>
+        {% endif %}
         </div>
         <div class="col-md-8">
           <div class="card-body">
             <h5 class="card-title">{{product.product_brand}}</h5>
             <p class="card-text">{{product.product_name}}</p>
+            
+              {% if product.quantity == 0 %}
+              <p class="text-danger" ><b> Out of stock </b></p>
+            {% elif product.quantity <= 5 %}
+            <p class="text-danger" ><b>  Hurry only a {{product.quantity}} items left !!!</b> </p>
+            {% elif product.quantity <= 10 %}
+            <p class="text-danger" ><b>  Hurry only a few items left !!! </b></p>
+            {% else %}
+            <p class="text-primary" ><b>  In stock </b></p>
+            {% endif %}
+
             <a class="btn btn-primary" href="{% url 'product_details' cat.id  product.id %}">View Product</a>
           </div>
         </div>

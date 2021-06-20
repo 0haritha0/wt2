@@ -157,15 +157,23 @@ def addtocart(request,proid):
     # get user
     cuser = request.user
 
+    cat_id = prods.product_category.id
 
     #check for cart existence
     carts = Cart.objects.filter(user = cuser)
     b=carts.count()
 
+    if prods.quantity <= 0:
+        messages.add_message(request,messages.INFO,'Item out of stock!')
+        return redirect('product_details',cat_id,proid)
+    
     if float(quentity) < 1.0:
         messages.add_message(request,messages.INFO,'Minimum quantity should be 1')
-        return redirect('homepage')
+        return redirect('product_details',cat_id,proid)
     
+    if prods.quantity-float(quentity) < 0:
+        messages.add_message(request,messages.INFO,'Only '+str(prods.quantity)+' items left!')
+        return redirect('product_details',cat_id,proid)
         
     if b==0:
         Cart.objects.create(user=cuser).save()
@@ -192,7 +200,7 @@ def addtocart(request,proid):
     carts.total_price =  carti_list['price__sum']
     carts.save()
     messages.add_message(request,messages.INFO,'Item added to cart')
-    return redirect('homepage')
+    return redirect('cart')
 
 
 def usercart(request, user_id):
@@ -210,3 +218,137 @@ def deletefromcart(request,cartid,cartiid):
     c.save()
     CartItems.objects.get(id = cartiid).delete()
     return redirect(request.META['HTTP_REFERER'])
+
+def cart(request):
+    user_id = request.user.id
+    cuser = User.objects.get(id = user_id)
+
+    carts = Cart.objects.filter(user = cuser)
+    b=carts.count()
+    if b==0:
+        Cart.objects.create(user=cuser).save()
+
+    usercart = Cart.objects.get(user=cuser)
+    items = CartItems.objects.filter(cart = usercart)
+    total = CartItems.objects.filter(cart = usercart).aggregate(Sum('quantity'))
+    context = {'items' : items,'username' : request.user.username, 'usercart' :usercart,'total':total}
+    return render(request,"products/cart.html",context)
+
+def orderoptions(request):
+    user_id = request.user.id
+    cuser = User.objects.get(id = user_id)
+
+    carts = Cart.objects.filter(user = cuser)
+    b=carts.count()
+    if b==0:
+        Cart.objects.create(user=cuser).save()
+
+    usercart = Cart.objects.get(user=cuser)
+    items = CartItems.objects.filter(cart = usercart)
+    total = CartItems.objects.filter(cart = usercart).aggregate(Sum('quantity'))
+    addresses = Address.objects.filter(user = cuser)
+    payments = payment.objects.all()
+    context = {'items' : items, 'usercart' :usercart,'total':total,'addresses':addresses,'payments':payments}
+    return render(request,"products/address_options.html",context)
+
+def placeorder(request):
+    
+    address_id = request.POST['addr']
+    payment_id = request.POST['pay']
+    address = Address.objects.get(pk=address_id)
+    pay = payment.objects.get(pk=payment_id)
+    cuser = request.user
+    usercart = Cart.objects.get(user = cuser)
+    atime = datetime.datetime.now()
+    adate = datetime.datetime.now()
+    price = usercart.total_price
+    orderid = "BW-"+str(adate.year)+str(adate.month)+str(adate.day)+"-"+str(adate.hour)+str(adate.minute)+str(adate.second)
+    name = address.name
+    phone = address.phone
+    addr = address.addr+", "+ address.locality+", "+address.city+", "+address.state+" "+address.pincode
+    Order.objects.create(cart=usercart,total_price=price,date_added=atime,time_added=adate,order_id=orderid,address=addr,paymode=pay,name=name,phone=phone).save()
+    userorder =  Order.objects.get(order_id=orderid)
+    items = CartItems.objects.filter(cart = usercart)
+    i = []
+    for item in items:
+        OrderItem.objects.create(order=userorder,prod=item.prod,price=item.price,quantity=item.quantity).save()
+        product = item.prod
+        product.quantity = product.quantity - item.quantity
+        product.save()
+        i.append(item.prod)
+    
+    orderitems = OrderItem.objects.filter(order = userorder)
+    context ={'userorder':userorder,'address':address,'orderitems':orderitems}
+    items.delete()
+
+    return render(request,"products/ordered.html",context)
+
+def myaddress(request):
+    cuser = request.user
+    addresses = Address.objects.filter(user = cuser)
+    states = addresses.__getstate__
+    context = {'addresses' : addresses,'states':states}
+    return render(request,"products/myaddress.html",context)
+
+def addaddress(request):
+    cuser = request.user
+    name = request.POST['name']
+    phoneno = request.POST['phoneno']
+    pincode = request.POST['pincode']
+    locality = request.POST['locality']
+    address = request.POST['address']
+    city = request.POST['city']
+    value = request.POST['state']
+    landmark = request.POST['landmark']
+    aphone = request.POST['aphone']
+    Address.objects.create(user=cuser,name=name,phone=phoneno,locality=locality,addr=address,city=city,state=landmark,aphone=aphone,pincode=pincode).save()
+    context = {'value' : value}
+    return redirect('myaddress')
+    #return render(request,"products/sample.html",context)
+
+def deleteaddress(request,addr_id):
+    cuser = request.user
+    addr = Address.objects.get(id = addr_id)
+    addr.delete()
+    return redirect('myaddress')
+
+def myorders(request):
+    cuser = request.user
+    usercart = Cart.objects.get(user = cuser)
+    orders = Order.objects.filter(cart = usercart)
+
+    context = {'orders':orders}
+    return render(request,"products/myorders.html",context)
+
+def ordersummary(request, orderid):
+
+    userorder =  Order.objects.get(pk = orderid)
+    orderitems = OrderItem.objects.filter(order = userorder)
+    context ={'userorder':userorder,'orderitems':orderitems}
+
+    return render(request,"products/ordered.html",context)
+
+def blog(request):
+    all_tips = tips.objects.all()
+    tip_l = tips.objects.filter(status = 'P').last()
+    tips_p = parenting_tip.objects.all().last()
+    ages = tips_p.get_ages()
+    age = ages[0][1]
+    context ={'all_tips':all_tips,'tips_p':tips_p,'tip_l':tip_l,'ages':ages,'age':age}
+
+    return render(request,"products/tips.html",context)
+
+def parenting(request,age_id):
+    age_tips = parenting_tip.objects.filter(age = age_id)
+    aget = age_tips.last()
+    aget = aget.get_age_display()
+    context ={'age_tips':age_tips,'aget':aget}
+
+    return render(request,"products/age_tips.html",context)
+
+def publishedtips(request):
+    
+    tips_all = tips.objects.filter(status = 'P').reverse()
+    context ={'all_tips':tips_all}
+
+    return render(request,"products/publishedtips.html",context)

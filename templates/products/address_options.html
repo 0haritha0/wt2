@@ -1,0 +1,55 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+<br>
+<h2  style="margin-left: 5%">Address Options</h2>
+<div class="container">
+    <div class="row" >
+        
+      <div class="col-sm" style="margin: 5% 0%;">
+        <form  method="post" action="{% url 'placeorder' %}" >
+          {% csrf_token %}
+          <fieldset class="form-group">
+            <legend class="mt-4">Choose a address</legend>
+            {% for address in addresses %}
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="addr" id="addr{{address.id}}" value="{{address.id}}" checked="">
+                {{address.name}} {{address.phone}}
+              </label>
+              <p>{{address.addr}}, {{address.locality}}, {{address.city}}, {{address.state}} - {{address.pincode}}</p>
+            </div>
+            {% endfor %}
+          </fieldset>
+
+          <fieldset class="form-group">
+            <legend class="mt-4">Choose a Payment Option</legend>
+            {% for payment in payments %}
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="pay" id="addr{{payment.id}}" value="{{payment.id}}" checked="">
+                {{payment}}
+              </label>
+            </div>
+            {% endfor %}
+          </fieldset>
+          <br>
+          <button class="btn btn-primary" type="submit">Place Order</button>
+
+        </form>
+      </div>
+
+      <div class="col-sm" style="margin: 5%;">
+        {% if items %}
+        <h3 class="text-muted" >PRICE DETAILS</h3>
+        <br>
+        <h4>Total Price({{total.quantity__sum}} items) </h4>
+        <h4><b>{{usercart.total_price}}</b></h4>
+        <br>
+        
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

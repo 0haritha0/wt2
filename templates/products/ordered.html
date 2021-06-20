@@ -1,0 +1,32 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+<br>
+<h2  style="margin-left: 5%">Order Summary</h2>
+<div class="container">
+    <h4>Order id: <span class="text-primary" > #{{userorder.order_id}}</span></h4>
+    <h5>Total price = <b>{{userorder.total_price}}</b></h5>
+    <h6>{{userorder.name}} - {{userorder.phone}}</h6>
+    <h6>{{userorder.address}}</h6>
+    
+    <p>Date added - {{userorder.date_added}}<br>Payment method - {{userorder.paymode}}</p>
+
+    {% for orderitem in orderitems %}
+    <div class="card mb-3" style="max-width: 700px;">
+        <div class="row no-gutters">
+          <div class="col-md-4">
+            <img src="{{orderitem.prod.product_image.url}}" class="card-img" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h6 class="card-title"><a href="{% url 'product_details' orderitem.prod.product_category.id  orderitem.prod.id %}">{{orderitem.prod.product_brand}} {{i.prod.product_name}}</a></h6>
+              <h5 class="card-text">₹{{orderitem.prod.get_discount_price}}</h5>
+              <p class="card-text"><del>₹{{orderitem.prod.product_price}}</del> &nbsp; <span  class="text-primary" >{{orderitem.prod.product_discount}}% Off</span></p>
+              <p class="card-text">Quantity = {{orderitem.quantity}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}

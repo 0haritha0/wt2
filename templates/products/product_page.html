@@ -2,6 +2,11 @@
 {% load static %}
 {% block content %}
 
+<div>{% for message in messages %}
+  <div class="text-center alert alert-dismissible alert-primary">
+      <button type="button" class="close" data-bs-dismiss="alert">&times;</button>
+      {{message}}
+  {% endfor %}</div>
 <div class="container">
     <div class="row" style="height: 600px;">
         
@@ -20,12 +25,22 @@
         <form name="quantityform" method="post" action="{% url 'addtocart' pro.id %}" >
           {% csrf_token %}
 
-          <input type="number" id="num" name="quantity" value= 0 #qua >
+          <input type="number" id="num" name="quantity" value=1 #qua >
           <br>
+          <br>
+          {% if pro.quantity == 0 %}
+            <p class="text-danger" > Out of stock </p>
+          {% elif pro.quantity <= 5 %}
+          <p class="text-danger" > Hurry only a {{pro.quantity}} items left !!! </p>
+          {% elif pro.quantity <= 10 %}
+          <p class="text-danger" > Hurry only a few items left !!! </p>
+          {% else %}
+          <p class="text-primary" > In stock </p>
+          {% endif %}
           <br>
           <button class="btn btn-primary" type="submit">Add to Cart</button> 
           
-          <a class="btn btn-primary" href= "{% url 'usercart' u.id%}">Go to cart</a>
+          <a class="btn btn-primary" href= "{% url 'cart' %}">Go to cart</a>
        </tr>
       </form>
 
